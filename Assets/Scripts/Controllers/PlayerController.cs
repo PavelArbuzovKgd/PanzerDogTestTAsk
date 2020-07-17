@@ -46,7 +46,7 @@ public class PlayerController: IOnUpdate, IOnStart
     public void OnStart()
     {
         character = MainController.Instance.Character;
-        cam = Camera.main; 
+        cam = Camera.main;
         agent = character.Gfx.GetComponent<NavMeshAgent>();
     }
 }

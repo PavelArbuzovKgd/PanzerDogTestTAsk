@@ -9,12 +9,17 @@ public class Character
     private Weapon weapon;
     private Vector3 rightHand = new Vector3(0,0,1);//координаты правой руки (фиктивной)
     private Vector3 moveVector;   
-    private float hp;
+    private readonly float baseHp;
+    private float currentHp;
     private float speedMove;
     private CharacterController characterController;     
     private Quaternion cameraTargetRot;       
     public GameObject Gfx {get => gfx;}
-    public Weapon Weapon { get => weapon;}    
+    public Weapon Weapon { get => weapon;}
+    public float Hp { get => currentHp;}
+
+    public delegate void HpDelegate();
+    public event HpDelegate EventHp;
 
     #endregion
 
@@ -27,27 +32,31 @@ public class Character
         weapon.transform.parent = gfx.transform;
         weapon.transform.position = gfx.transform.position+ rightHand;
         characterController = gfx.GetComponent<CharacterController>();
-        hp = characterData.Hp;
+        baseHp = characterData.Hp;
         speedMove = characterData.Speed;
         cameraTargetRot = Gfx.transform.localRotation;
+        currentHp = baseHp;
     }
 
     #region Method 
 
     public void Die()
     {
-        MainController.Instance.EndGame();
-        //Gfx.SetActive(false); // отключаем графику при смерти        
+        MainController.Instance.EndGame(false);           
         GameObject.Destroy(gfx);
     }
 
     public void SetDamage(float damage)
     {
-        hp -= damage;
-        if (hp <= 0)
+        currentHp -= damage;
+        Debug.Log(currentHp);
+
+        if (currentHp <= 0)
         {
-            Die();
+            currentHp = 0;
+            Die();           
         }
+        EventHp?.Invoke();
     }
 
     public void CharecterMove(Vector2 _input)

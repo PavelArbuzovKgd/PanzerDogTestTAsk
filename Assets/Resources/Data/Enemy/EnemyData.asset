@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prefab: {fileID: 3062418932158442887, guid: 208564e568e68e344b848afca7079819, type: 3}
   Hp: 100
-  Damage: 50
+  Damage: 1
   AttackDistance: 3
   Speed: 3

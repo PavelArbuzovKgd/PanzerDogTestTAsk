@@ -14,6 +14,8 @@ public sealed class Enemy :  ISetDamage
     private RaycastHit raycast;
     public Transform Target { get; }
     public GameObject EnemyField { get => enemy; set => enemy = value; }
+    public delegate void DieDelegate();
+    public event DieDelegate EventDie;
 
     public Enemy(EnemyData EnemyData)
     {
@@ -37,16 +39,17 @@ public sealed class Enemy :  ISetDamage
             if (hp <= 0)
             {
                 hp = 0;
-                Die();
+                animator.SetBool("Die", true);
+                Die(2);
             }
         }
     }
 
-    private void Die()
-    {
-        animator.SetBool("Die", true);       
-        GameObject.Destroy(enemy.gameObject, 1);
-        MainController.Instance.CountEnemy -= 1;
+    private void Die(float dieTime)
+    {             
+        GameObject.Destroy(enemy.gameObject, dieTime);
+        enemy.GetComponentInChildren<Collider>().enabled = false;
+        EventDie?.Invoke();
         MainController.Instance.enemyes.Remove(this);
     }
 
@@ -69,7 +72,6 @@ public sealed class Enemy :  ISetDamage
             animator.SetBool("Attack", false);
             animator.SetBool("Stay", true);
         } 
-
     }
 
     public void Attack()

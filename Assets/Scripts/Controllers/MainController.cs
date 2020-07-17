@@ -11,14 +11,15 @@ public class MainController : MonoBehaviour
     private EnemyController enemyController;
     private TimeRemainingController timeRemainingController;
     private CharacterData characterData;
+    private UI uI;
     private IOnUpdate[] controllers;
     public static MainController Instance { get; private set; }
     public ITimeService TimeService { get; private set; }
     public Transform Player { get; private set; } 
     public Transform MainCamera { get; private set; }
-    public Character Character;   
+    public Character Character;
     public List<Enemy> enemyes;
-    public int CountEnemy;
+    public GameObject LevelGame;
 
     void Awake()
     {
@@ -28,26 +29,12 @@ public class MainController : MonoBehaviour
 
     void Start()
     {
-        TimeService = new UnityTimeService();
-        enemyes = new List<Enemy>();
-        characterData = Load<CharacterData>("Data/Character/CharacterData");
-        Character = new Character(characterData);
-        timeRemainingController = new TimeRemainingController();
-        playerController = new PlayerController();
-        cameraController = new CameraController();
-        enemySpawnController = new EnemySpawnController();
-        enemyController = new EnemyController();
-        MainCamera = Camera.main.transform; // камера
-        Player = GameObject.FindGameObjectWithTag("Player").transform;
-        controllers = new IOnUpdate[5];//можно List<>
-        controllers[0] = playerController;
-        controllers[1] = cameraController;
-        controllers[2] = enemySpawnController;
-        controllers[3] = enemyController;
-        controllers[4] = timeRemainingController;        
-        enemySpawnController.OnStart();
-        playerController.OnStart();
-        cameraController.OnStart();        
+        uI = GetComponent<UI>();
+        TimeService = new UnityTimeService();       
+        timeRemainingController = new TimeRemainingController();       
+        LevelGame.SetActive(false);
+        uI.GameUi.SetActive(false);
+        uI.Menu.SetActive(true);
     }
    
     void Update()
@@ -56,17 +43,53 @@ public class MainController : MonoBehaviour
         {
             var controller = controllers[index];
             controller?.OnUpdate();
-        }
-        Debug.Log(CountEnemy);
-        if (CountEnemy == 0)
-        {
-           EndGame();
-        }
+        }        
     }
-    public void EndGame()
+
+    public void InitGame()
+    {      
+        enemyes = new List<Enemy>();
+        characterData = Load<CharacterData>("Data/Character/CharacterData");
+        Character = new Character(characterData);
+        playerController = new PlayerController();
+        cameraController = new CameraController();
+        enemySpawnController = new EnemySpawnController();
+        enemyController = new EnemyController();
+        MainCamera = Camera.main.transform; // камера
+        Player = GameObject.FindGameObjectWithTag("Player").transform;
+        LevelGame.SetActive(true);
+        controllers = new IOnUpdate[5];//можно List<>
+        controllers[0] = playerController;
+        controllers[1] = cameraController;
+        controllers[2] = enemySpawnController;
+        controllers[3] = enemyController;
+        controllers[4] = timeRemainingController;
+        enemySpawnController.OnStart();
+        playerController.OnStart();
+        cameraController.OnStart();
+        uI.GameUi.SetActive(true);
+        uI.Menu.SetActive(false);
+    }
+
+    public void EndGame(bool winner)
     {
+      
+        for (int i=0; i< enemyes.Count;i++)
+        {
+            Destroy(enemyes[i].EnemyField);
+
+        }
+        enemyes.Clear();
+        LevelGame.SetActive(false);
+        uI.GameUi.SetActive(false);
+        uI.Menu.SetActive(true);
         controllers = new IOnUpdate[0];
-        SceneManager.LoadScene(1);
+        Destroy(Character.Gfx);
+        if (winner)
+        {
+            uI.MenuText.text= "Congratulations you are the Best";
+        }
+        else uI.MenuText.text = "You lose! Try again";        
     }
 
     private static T Load<T>(string resourcesPath) where T : Object => CustomResources.Load<T>(Path.ChangeExtension(resourcesPath, null));//перенести ToDo

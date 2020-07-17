@@ -9,7 +9,8 @@ public class EnemySpawnController : MonoBehaviour, IOnUpdate, IOnStart
     private TimeRemaining _spawnInvoker;
     private float delayWave;  
     private int previousWaveTime=2;
-    private int countWave= 3;    
+    private int countWave= 3;
+    public int CountEnemy;
 
     public void OnStart()
     {
@@ -20,12 +21,16 @@ public class EnemySpawnController : MonoBehaviour, IOnUpdate, IOnStart
             delayWave += wave[i].DelayWave;
             _spawnInvoker = new TimeRemaining(wave[i].CreateWave, delayWave);
             _spawnInvoker.AddTimeRemaining();
-            MainController.Instance.CountEnemy += wave[i].countEnemy;
-        }       
-    }   
+            CountEnemy += wave[i].CountEnemy;
+        }
+       
+    }    
 
     public void OnUpdate()
     {
-       
-    }
+        if (wave[wave.Count - 1].WasEnd)
+        {
+            MainController.Instance.EndGame(true);
+        }
+    }    
 }
