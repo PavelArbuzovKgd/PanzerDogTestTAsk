@@ -1,13 +1,11 @@
-﻿using UnityEngine;
-
-public class EnemyController : MonoBehaviour, IOnUpdate
+﻿
+public class EnemyController : IOnUpdate
 {
     public void OnUpdate()
-    {
-        var enemyes = MainController.Instance.enemyes;
-        for (int i = 0;i < enemyes.Count; i++)
+    {        
+        for (int i = 0;i < MainController.Instance.Enemyes.Count; i++)
         {
-            enemyes[i].MovePoint();
-        }             
-    }   
+            MainController.Instance.Enemyes[i].MovePoint();
+        }
+    }     
 }

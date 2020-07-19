@@ -11,14 +11,14 @@ public class MainController : MonoBehaviour
     private EnemyController enemyController;
     private TimeRemainingController timeRemainingController;
     private CharacterData characterData;
-    private UI uI;
     private IOnUpdate[] controllers;
     public static MainController Instance { get; private set; }
+    public UI UI { get; private set; }
     public ITimeService TimeService { get; private set; }
     public Transform Player { get; private set; } 
     public Transform MainCamera { get; private set; }
     public Character Character;
-    public List<Enemy> enemyes;
+    public List<Enemy> Enemyes;
     public GameObject LevelGame;
 
     void Awake()
@@ -29,12 +29,12 @@ public class MainController : MonoBehaviour
 
     void Start()
     {
-        uI = GetComponent<UI>();
+        UI = GetComponent<UI>();
         TimeService = new UnityTimeService();       
         timeRemainingController = new TimeRemainingController();       
         LevelGame.SetActive(false);
-        uI.GameUi.SetActive(false);
-        uI.Menu.SetActive(true);
+        UI.GameUi.SetActive(false);
+        UI.Menu.SetActive(true);
     }
    
     void Update()
@@ -48,15 +48,15 @@ public class MainController : MonoBehaviour
 
     public void InitGame()
     {      
-        enemyes = new List<Enemy>();
-        characterData = Load<CharacterData>("Data/Character/CharacterData");
+        Enemyes = new List<Enemy>();
+        characterData = Load<CharacterData>(StringManager.CharacterDataPath);
         Character = new Character(characterData);
         playerController = new PlayerController();
         cameraController = new CameraController();
         enemySpawnController = new EnemySpawnController();
         enemyController = new EnemyController();
         MainCamera = Camera.main.transform; // камера
-        Player = GameObject.FindGameObjectWithTag("Player").transform;
+        Player = GameObject.FindGameObjectWithTag(StringManager.TagPlayer).transform;
         LevelGame.SetActive(true);
         controllers = new IOnUpdate[5];//можно List<>
         controllers[0] = playerController;
@@ -67,29 +67,27 @@ public class MainController : MonoBehaviour
         enemySpawnController.OnStart();
         playerController.OnStart();
         cameraController.OnStart();
-        uI.GameUi.SetActive(true);
-        uI.Menu.SetActive(false);
+        UI.GameUi.SetActive(true);
+        UI.Menu.SetActive(false);
     }
 
     public void EndGame(bool winner)
-    {
-      
-        for (int i=0; i< enemyes.Count;i++)
+    {      
+        for (int i=0; i< Enemyes.Count;i++)
         {
-            Destroy(enemyes[i].EnemyField);
-
+            Destroy(Enemyes[i].EnemyField);
         }
-        enemyes.Clear();
+        Enemyes.Clear();
         LevelGame.SetActive(false);
-        uI.GameUi.SetActive(false);
-        uI.Menu.SetActive(true);
+        UI.GameUi.SetActive(false);
+        UI.Menu.SetActive(true);
         controllers = new IOnUpdate[0];
         Destroy(Character.Gfx);
         if (winner)
         {
-            uI.MenuText.text= "Congratulations you are the Best";
+            UI.MenuText.text= StringManager.UiTextWin;
         }
-        else uI.MenuText.text = "You lose! Try again";        
+        else UI.MenuText.text = StringManager.UiTextWLose;        
     }
 
     private static T Load<T>(string resourcesPath) where T : Object => CustomResources.Load<T>(Path.ChangeExtension(resourcesPath, null));//перенести ToDo

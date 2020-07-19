@@ -31,16 +31,17 @@ public class PlayerController: IOnUpdate, IOnStart
                     agent.SetDestination(hit.point);
                 }
             }
-            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+            if (Input.GetAxis(StringManager.InputHorizontal) != 0 || Input.GetAxis(StringManager.InputVertical) != 0)
             {
                 agent.isStopped = true;
-                float x = Input.GetAxis("Horizontal");
-                float y = Input.GetAxis("Vertical");
-                input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+                float x = Input.GetAxis(StringManager.InputHorizontal);
+                float y = Input.GetAxis(StringManager.InputVertical);
+                input = new Vector3(Input.GetAxis(StringManager.InputHorizontal), Input.GetAxis(StringManager.InputVertical));
                 character.Gfx.transform.Rotate(Vector3.up * x * 100 * Time.deltaTime);
                 character.Gfx.transform.Translate(Vector3.forward * y * 5 * Time.deltaTime);                
             }
         }
+        MainController.Instance.UI.ShowCount();
     }
 
     public void OnStart()

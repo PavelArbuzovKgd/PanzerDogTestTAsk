@@ -31,7 +31,7 @@ public class CameraController : MonoBehaviour, IOnUpdate,IOnStart//помеща�
      
         if (mTarget != null)
         {
-            currentZoom -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
+            currentZoom -= Input.GetAxis(StringManager.InputMouseScrollWheel) * zoomSpeed;
             currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
             if (Input.GetMouseButton(2))
             {

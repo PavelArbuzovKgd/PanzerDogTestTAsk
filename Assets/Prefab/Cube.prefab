@@ -11,10 +11,9 @@ GameObject:
   - component: {fileID: 4365092320596318661}
   - component: {fileID: 6434704469460814039}
   - component: {fileID: 8864824351071400851}
-  - component: {fileID: 3885396359733643069}
   - component: {fileID: 7666324599920634216}
   - component: {fileID: 9122517474963030305}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -82,19 +81,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &3885396359733643069
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1538550744863941586}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Size: {x: 1.06, y: 1.15, z: 1.06}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!143 &7666324599920634216
 CharacterController:
   m_ObjectHideFlags: 0
@@ -107,7 +93,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1
-  m_Radius: 1.48
+  m_Radius: 0.69
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08

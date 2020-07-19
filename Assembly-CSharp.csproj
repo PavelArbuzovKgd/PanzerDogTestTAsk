@@ -89,6 +89,7 @@
     <Compile Include="Assets\Scripts\Enemy\EnemyData.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemySpawnController.cs" />
     <Compile Include="Assets\Scripts\Helpers\CustomResources.cs" />
+    <Compile Include="Assets\Scripts\Helpers\StringManager.cs" />
     <Compile Include="Assets\Scripts\Helpers\TimeRemaining\ICleanUp.cs" />
     <Compile Include="Assets\Scripts\Helpers\TimeRemaining\ITimeRemaining.cs" />
     <Compile Include="Assets\Scripts\Helpers\TimeRemaining\TimeRemaining.cs" />

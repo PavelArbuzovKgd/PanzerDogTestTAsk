@@ -1,39 +1,39 @@
-﻿using UnityEngine;
-using System.IO;
+﻿using System.IO;
+using UnityEngine;
 
 
-public class Wave 
+public class Wave
 {
     private Enemy enemy;
     private EnemyData enemyData;
     private bool wasEnd;
+    private GameObject[] spawnPosition;
     public int CountEnemy;
-    public Vector3 Position;
     public float EnemySpawnTime;
     public float DelayWave;
     public bool WasEnd { get => wasEnd; }
-
     
     public Wave()
     {
-        CountEnemy = 1;
+        spawnPosition = GameObject.FindGameObjectsWithTag(StringManager.Respawn);
+        CountEnemy = Random.Range(3,30);
         EnemySpawnTime = 3;//перенести в ScriptableObject
         DelayWave = 7;
     }
 
     public void CreateWave()
     {
-        enemyData = Load<EnemyData>("Data/Enemy/EnemyData");
+        enemyData = Load<EnemyData>(StringManager.EnemyDataPath);
         for (int i = 0; CountEnemy > i; i++)
         {
-            Spawn(new Vector3(i+1,0,i+4));          
+            Spawn(spawnPosition[Random.Range(0, spawnPosition.Length)].transform.position);          
         }
     }
     public void Spawn(Vector3 point)
     {
         enemy = new Enemy(enemyData);
         enemy.EnemyField.transform.position += point;
-        MainController.Instance.enemyes.Add(enemy);        
+        MainController.Instance.Enemyes.Add(enemy);        
         enemy.EventDie += UpdateCountEnemy;
     }
     public void UpdateCountEnemy()

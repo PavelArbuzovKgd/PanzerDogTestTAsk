@@ -1,6 +1,5 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEditor;
 using DG.Tweening;
 
@@ -17,15 +16,14 @@ public class UI : MonoBehaviour
     {
         _startGameButton.onClick.AddListener(StartGameButtonClick);        
         _exitButton.onClick.AddListener(ExitButtonClick);
-        InvokeRepeating(nameof(ShakeText),1.0f,1.0f);
-        Invoke("ShowCount",0.1F);            
+        InvokeRepeating(nameof(ShakeText),1.0f,1.0f);        
     }
 
     private void OnDisable()
     {
         _startGameButton.onClick.RemoveListener(StartGameButtonClick);        
         _exitButton.onClick.RemoveListener(ExitButtonClick);
-        CancelInvoke(nameof(ShakeText));   
+        CancelInvoke(nameof(ShakeText));        
     }
 
     private void StartGameButtonClick()
@@ -38,10 +36,10 @@ public class UI : MonoBehaviour
         EditorApplication.isPlaying = false;
     }
 
-    public  void ShowCount()//ToDo вызвать с помощью события
+    public  void ShowCount()
     {
         if (MainController.Instance.Character != null)
-        {
+        {      
             _hpBar.transform.GetChild(0).GetComponent<Text>().text = ((int)MainController.Instance.Character.Hp).ToString();
             _hpBar.image.fillAmount = MainController.Instance.Character.Hp;
             _hpBar.image.color = (MainController.Instance.Character.Hp >= 0.6) ? Color.green : Color.red;
@@ -58,7 +56,5 @@ public class UI : MonoBehaviour
             AppendInterval(interval).
             Join(MenuText.transform.DORotate(new Vector3(0.0f, 0.0f, -50f), duration)).SetEase(Ease.OutBounce);
         sequence.Play();
-
     }
-
 }

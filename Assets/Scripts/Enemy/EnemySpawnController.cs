@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class EnemySpawnController : MonoBehaviour, IOnUpdate, IOnStart
 {
-    public List< Wave> wave;
-    private TimeRemaining _spawnInvoker;
+    private TimeRemaining spawnInvoker;
     private float delayWave;  
     private int previousWaveTime=2;
     private int countWave= 3;
+    public List< Wave> wave;//Волна
     public int CountEnemy;
 
     public void OnStart()
@@ -19,8 +19,8 @@ public class EnemySpawnController : MonoBehaviour, IOnUpdate, IOnStart
         {
             wave.Add(new Wave());
             delayWave += wave[i].DelayWave;
-            _spawnInvoker = new TimeRemaining(wave[i].CreateWave, delayWave);
-            _spawnInvoker.AddTimeRemaining();
+            spawnInvoker = new TimeRemaining(wave[i].CreateWave, delayWave);
+            spawnInvoker.AddTimeRemaining();
             CountEnemy += wave[i].CountEnemy;
         }
        

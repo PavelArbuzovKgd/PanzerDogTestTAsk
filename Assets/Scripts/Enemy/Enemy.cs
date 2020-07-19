@@ -1,21 +1,24 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.AI;
 
-public sealed class Enemy :  ISetDamage
+public sealed class Enemy : ISetDamage
 {
-    private GameObject enemy;//префаб
+    private GameObject enemy;//префаб 
+    private List<Transform> arsenalAttack;//Оружие - Руки
     private float hp;
     private float damage;
-    private int speed;
+    private float speedAttack;
+    private float timer;
     private NavMeshAgent agent { get; }
-    private EnemyData enemyData;
+    private EnemyData enemyData;//настройки
     private float attackDistance;
     private Animator animator;
-    private RaycastHit raycast;
     public Transform Target { get; }
     public GameObject EnemyField { get => enemy; set => enemy = value; }
     public delegate void DieDelegate();
     public event DieDelegate EventDie;
+    public bool IsAttack;
 
     public Enemy(EnemyData EnemyData)
     {
@@ -25,10 +28,13 @@ public sealed class Enemy :  ISetDamage
         enemy = enemyData.Prefab;
         hp = enemyData.Hp;
         damage = enemyData.Damage;
-        speed = enemyData.Speed;
+        speedAttack = enemyData.SpeedAttack;
         enemy = GameObject.Instantiate(enemy);
         agent = enemy.GetComponent<NavMeshAgent>();
-        animator = enemy.GetComponent<Animator>();         
+        animator = enemy.GetComponent<Animator>();        
+        arsenalAttack = new List<Transform>();
+        arsenalAttack.Add(enemy.transform.Find("Hand"));
+        arsenalAttack.Add(enemy.transform.Find("Hand1"));
     }
 
     public void SetDamage(float damage)
@@ -39,50 +45,78 @@ public sealed class Enemy :  ISetDamage
             if (hp <= 0)
             {
                 hp = 0;
-                animator.SetBool("Die", true);
+                animator.SetBool(StringManager.Die, true);
                 Die(2);
             }
         }
     }
 
     private void Die(float dieTime)
-    {             
+    {
+        MainController.Instance.Enemyes.Remove(this);
         GameObject.Destroy(enemy.gameObject, dieTime);
         enemy.GetComponentInChildren<Collider>().enabled = false;
         EventDie?.Invoke();
-        MainController.Instance.enemyes.Remove(this);
     }
 
     public void MovePoint()
-    {
+    {      
         if (Target != null)
         {
-            animator.SetBool("Stay", false);
+            animator.SetBool(StringManager.Stay, false);
             float distance = Vector3.Distance(enemy.transform.position, Target.position);
             agent.SetDestination(Target.position);
             if (distance < attackDistance)
             {
-                animator.SetBool("Attack", true);
+                animator.SetBool(StringManager.Attack, true);
                 Attack();
             }
-            else animator.SetBool("Attack", false);
+            else
+            {
+                animator.SetBool(StringManager.Attack, false);
+                timer = 0;
+                IsAttack = false;
+            }
         }
         else
         {
-            animator.SetBool("Attack", false);
-            animator.SetBool("Stay", true);
-        } 
+            animator.SetBool(StringManager.Attack, false);
+            animator.SetBool(StringManager.Stay, true);
+            timer = 0;
+            IsAttack = false;
+        }
     }
 
     public void Attack()
     {
-        if (Physics.Raycast(enemy.transform.position, -Vector3.forward, out raycast, 100))
+        for (int a = 0; a < arsenalAttack.Count; a++)
         {
-            if (raycast.transform == MainController.Instance.Player)
+            var colliders = Physics.OverlapSphere(arsenalAttack[a].position, 3);
+            for (int i = 0; i < colliders.Length; i++)
             {
-
-                MainController.Instance.Character.SetDamage(damage);
+                if (colliders[i].transform.position == MainController.Instance.Player.position)
+                {
+                    if (!IsAttack)
+                    {
+                        GiveDamage(MainController.Instance.Character);
+                        IsAttack = true;
+                    }
+                    else
+                    {
+                        timer += Time.deltaTime;
+                        if (timer > speedAttack)
+                        {
+                            timer = 0;
+                            IsAttack = false;
+                        }
+                    }
+                }
             }
         }
+    }
+
+    public void GiveDamage (ISetDamage Object)
+    {
+        Object.SetDamage(damage);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 
-public class Character 
+public class Character : ISetDamage
 {
     #region Fields
     
@@ -48,8 +48,7 @@ public class Character
 
     public void SetDamage(float damage)
     {
-        currentHp -= damage;
-        Debug.Log(currentHp);
+        currentHp -= damage;      
 
         if (currentHp <= 0)
         {

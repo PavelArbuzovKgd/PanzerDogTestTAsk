@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 
-public abstract class Ammunition : MonoBehaviour /// класс снаряды базовый для пуль//TODO/настройки перенести scriptObj
+public abstract class Ammunition : MonoBehaviour /// класс снаряды базовый для пуль
 {
-    [SerializeField] protected float timeToDestruct = 10;//время жизни
-    [SerializeField] protected float baseDamage = 10; // базовый урон    
+    [SerializeField] protected float timeToDestruct = 3;//время жизни
+    [SerializeField] protected float minDamage; 
+    [SerializeField] protected float maxDamage;
     public AmmunitionType Type = AmmunitionType.Bullet;//обращаемся к типу снаряда
         
     private void Start()
