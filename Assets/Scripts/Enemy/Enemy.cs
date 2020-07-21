@@ -4,40 +4,59 @@ using UnityEngine.AI;
 
 public sealed class Enemy : ISetDamage
 {
+
+    #region Fields
+
     private GameObject enemy;//префаб 
     private List<Transform> arsenalAttack;//Оружие - Руки
     private float hp;
     private float damage;
     private float speedAttack;
-    private float timer;
-    private NavMeshAgent agent { get; }
+    private float couldDawn;
     private EnemyData enemyData;//настройки
     private float attackDistance;
     private Animator animator;
+    public bool IsAttack;
+
+    #endregion
+
+
+    #region Properties
+
+    private NavMeshAgent agent { get; }
     public Transform Target { get; }
     public GameObject EnemyField { get => enemy; set => enemy = value; }
     public delegate void DieDelegate();
     public event DieDelegate EventDie;
-    public bool IsAttack;
+
+    #endregion
+
+
+    #region ClassLifeCycle
 
     public Enemy(EnemyData EnemyData)
     {
         enemyData = EnemyData;
-        Target = MainController.Instance.Player;
-        attackDistance = enemyData.AttackDistance;
-        enemy = enemyData.Prefab;
+        Target = MainController.Instance.Player;//Цель
+        attackDistance = enemyData.AttackDistance;//дистанция атаки
+        enemy = enemyData.Prefab;//префаб
         hp = enemyData.Hp;
         damage = enemyData.Damage;
         speedAttack = enemyData.SpeedAttack;
         enemy = GameObject.Instantiate(enemy);
         agent = enemy.GetComponent<NavMeshAgent>();
         animator = enemy.GetComponent<Animator>();        
-        arsenalAttack = new List<Transform>();
+        arsenalAttack = new List<Transform>();//способы атаки (чем атакует)
         arsenalAttack.Add(enemy.transform.Find("Hand"));
         arsenalAttack.Add(enemy.transform.Find("Hand1"));
     }
 
-    public void SetDamage(float damage)
+    #endregion
+
+
+    #region Method 
+
+    public void SetDamage(float damage)//получение урона
     {
         if (hp > 0)
         {
@@ -51,7 +70,7 @@ public sealed class Enemy : ISetDamage
         }
     }
 
-    private void Die(float dieTime)
+    private void Die(float dieTime)//смерть
     {
         MainController.Instance.Enemyes.Remove(this);
         GameObject.Destroy(enemy.gameObject, dieTime);
@@ -74,7 +93,7 @@ public sealed class Enemy : ISetDamage
             else
             {
                 animator.SetBool(StringManager.Attack, false);
-                timer = 0;
+                couldDawn = 0;
                 IsAttack = false;
             }
         }
@@ -82,31 +101,31 @@ public sealed class Enemy : ISetDamage
         {
             animator.SetBool(StringManager.Attack, false);
             animator.SetBool(StringManager.Stay, true);
-            timer = 0;
+            couldDawn = 0;
             IsAttack = false;
         }
     }
 
     public void Attack()
     {
-        for (int a = 0; a < arsenalAttack.Count; a++)
+        for (int a = 0; a < arsenalAttack.Count; a++)//перебираем способы атаки
         {
             var colliders = Physics.OverlapSphere(arsenalAttack[a].position, 3);
             for (int i = 0; i < colliders.Length; i++)
             {
-                if (colliders[i].transform.position == MainController.Instance.Player.position)
+                if (colliders[i].transform.position == MainController.Instance.Player.position)//если игрок попал в зону OverlapSphere
                 {
-                    if (!IsAttack)
+                    if (!IsAttack)//если не атакует
                     {
-                        GiveDamage(MainController.Instance.Character);
+                        GiveDamage(MainController.Instance.Character);//наносим урон
                         IsAttack = true;
                     }
-                    else
+                    else//если в атаке
                     {
-                        timer += Time.deltaTime;
-                        if (timer > speedAttack)
+                        couldDawn += Time.deltaTime;
+                        if (couldDawn > speedAttack)
                         {
-                            timer = 0;
+                            couldDawn = 0;
                             IsAttack = false;
                         }
                     }
@@ -117,6 +136,8 @@ public sealed class Enemy : ISetDamage
 
     public void GiveDamage (ISetDamage Object)
     {
-        Object.SetDamage(damage);
+        Object.SetDamage(damage);//наносим урон
     }
+
+    #endregion
 }

@@ -6,14 +6,19 @@ public class Character : ISetDamage
     #region Fields
     
     private GameObject gfx;//префаб
-    private Weapon weapon;
+    private Weapon weapon;//оружие
     private Vector3 rightHand = new Vector3(0,0,1);//координаты правой руки (фиктивной)
     private Vector3 moveVector;   
-    private readonly float baseHp;
-    private float currentHp;
-    private float speedMove;
-    private CharacterController characterController;     
-    private Quaternion cameraTargetRot;       
+    private readonly float baseHp;//начальное здоровье
+    private float currentHp;//текущее
+    private float speedMove;//скорость
+    private CharacterController characterController;//     characterController
+                                                 
+    #endregion
+
+
+    #region Properties
+
     public GameObject Gfx {get => gfx;}
     public Weapon Weapon { get => weapon;}
     public float Hp { get => currentHp;}
@@ -22,6 +27,9 @@ public class Character : ISetDamage
     public event HpDelegate EventHp;
 
     #endregion
+
+
+    #region ClassLifeCycle
 
     public Character(CharacterData characterData)
     {
@@ -34,9 +42,11 @@ public class Character : ISetDamage
         characterController = gfx.GetComponent<CharacterController>();
         baseHp = characterData.Hp;
         speedMove = characterData.Speed;
-        cameraTargetRot = Gfx.transform.localRotation;
         currentHp = baseHp;
     }
+
+    #endregion
+
 
     #region Method 
 

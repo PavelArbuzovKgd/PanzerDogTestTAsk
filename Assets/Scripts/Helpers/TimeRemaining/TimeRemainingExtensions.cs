@@ -1,45 +1,44 @@
 ﻿using System.Collections.Generic;
 
 
+public static partial class TimeRemainingExtensions
+{
+    #region Fields
 
-    public static partial class TimeRemainingExtensions
+    private static readonly List<ITimeRemaining> _timeRemainings = new List<ITimeRemaining>(10);
+
+    #endregion
+
+
+    #region Properties
+
+    public static List<ITimeRemaining> TimeRemainings => _timeRemainings;
+
+    #endregion
+
+
+    #region Methods
+
+    public static void AddTimeRemaining(this ITimeRemaining value)
     {
-        #region Fields
-        
-        private static readonly List<ITimeRemaining> _timeRemainings = new List<ITimeRemaining>(10);
-        
-        #endregion
-        
-        
-        #region Properties
-
-        public static List<ITimeRemaining> TimeRemainings => _timeRemainings;
-        
-        #endregion
-        
-        
-        #region Methods
-
-        public static void AddTimeRemaining(this ITimeRemaining value)
+        if (_timeRemainings.Contains(value))
         {
-            if (_timeRemainings.Contains(value))
-            {
-                return;
-            }
-
-            value.CurrentTime = value.Time;
-            _timeRemainings.Add(value);
+            return;
         }
 
-        public static void RemoveTimeRemaining(this ITimeRemaining value)
-        {
-            if (!_timeRemainings.Contains(value))
-            {
-                return;
-            }
-            _timeRemainings.Remove(value);
-        }
-        
-        #endregion
+        value.CurrentTime = value.Time;
+        _timeRemainings.Add(value);
     }
+
+    public static void RemoveTimeRemaining(this ITimeRemaining value)
+    {
+        if (!_timeRemainings.Contains(value))
+        {
+            return;
+        }
+        _timeRemainings.Remove(value);
+    }
+
+    #endregion
+}
 

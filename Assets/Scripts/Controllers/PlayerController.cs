@@ -4,24 +4,31 @@ using UnityEngine.AI;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController: IOnUpdate, IOnStart
 {
+    #region Fields
+
     private Camera cam;
     private Vector2 input;
     private NavMeshAgent agent;
     private Character character;
 
+    #endregion
+
+
+    #region Method 
+
     public void OnUpdate()
     {
         if (character != null)
         {
-            if (Input.GetKeyUp(KeyCode.Q))
+            if (Input.GetKeyUp(KeyCode.Q))//перезарятка
             {
                 character.Weapon.ReloadClip();
             }     
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0))//атака
             {
                 character.Weapon.Fire();                         
             }
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1))//перемешение мышкой
             {
                 Ray ray = cam.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
@@ -31,7 +38,7 @@ public class PlayerController: IOnUpdate, IOnStart
                     agent.SetDestination(hit.point);
                 }
             }
-            if (Input.GetAxis(StringManager.InputHorizontal) != 0 || Input.GetAxis(StringManager.InputVertical) != 0)
+            if (Input.GetAxis(StringManager.InputHorizontal) != 0 || Input.GetAxis(StringManager.InputVertical) != 0)//перемещение клавишами
             {
                 agent.isStopped = true;
                 float x = Input.GetAxis(StringManager.InputHorizontal);
@@ -41,7 +48,7 @@ public class PlayerController: IOnUpdate, IOnStart
                 character.Gfx.transform.Translate(Vector3.forward * y * 5 * Time.deltaTime);                
             }
         }
-        MainController.Instance.UI.ShowCount();
+        MainController.Instance.UI.ShowCount();//выводем хп 
     }
 
     public void OnStart()
@@ -50,4 +57,6 @@ public class PlayerController: IOnUpdate, IOnStart
         cam = Camera.main;
         agent = character.Gfx.GetComponent<NavMeshAgent>();
     }
+
+    #endregion
 }

@@ -5,12 +5,19 @@ using UnityEngine;
 
 public class EnemySpawnController : MonoBehaviour, IOnUpdate, IOnStart
 {
+    #region Fields
+
     private TimeRemaining spawnInvoker;
     private float delayWave;  
     private int previousWaveTime=2;
     private int countWave= 3;
     public List< Wave> wave;//Волна
     public int CountEnemy;
+
+    #endregion
+
+
+    #region Method 
 
     public void OnStart()
     {
@@ -32,5 +39,8 @@ public class EnemySpawnController : MonoBehaviour, IOnUpdate, IOnStart
         {
             MainController.Instance.EndGame(true);
         }
-    }    
+    }
+
+    #endregion
+
 }

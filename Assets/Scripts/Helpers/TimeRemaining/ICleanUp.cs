@@ -1,6 +1,6 @@
 ﻿
-    public interface ICleanUp
-    {
-        void Clean();
-    }
+public interface ICleanUp
+{
+    void Clean();
+}
 

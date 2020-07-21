@@ -1,10 +1,12 @@
 ﻿using System.IO;
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
+
 
 public class MainController : MonoBehaviour
 {
+    #region Fields
+
     private PlayerController playerController;
     private CameraController cameraController;
     private EnemySpawnController enemySpawnController;
@@ -12,14 +14,25 @@ public class MainController : MonoBehaviour
     private TimeRemainingController timeRemainingController;
     private CharacterData characterData;
     private IOnUpdate[] controllers;
+    public Character Character;
+    public List<Enemy> Enemyes;
+    public GameObject LevelGame;
+
+    #endregion
+
+
+    #region Properties
+
     public static MainController Instance { get; private set; }
     public UI UI { get; private set; }
     public ITimeService TimeService { get; private set; }
     public Transform Player { get; private set; } 
     public Transform MainCamera { get; private set; }
-    public Character Character;
-    public List<Enemy> Enemyes;
-    public GameObject LevelGame;
+
+    #endregion
+
+
+    #region Method 
 
     void Awake()
     {
@@ -46,10 +59,10 @@ public class MainController : MonoBehaviour
         }        
     }
 
-    public void InitGame()
+    public void InitGame()//запуск игры
     {      
         Enemyes = new List<Enemy>();
-        characterData = Load<CharacterData>(StringManager.CharacterDataPath);
+        characterData =CustomResources.Load<CharacterData>(StringManager.CharacterDataPath);
         Character = new Character(characterData);
         playerController = new PlayerController();
         cameraController = new CameraController();
@@ -71,7 +84,7 @@ public class MainController : MonoBehaviour
         UI.Menu.SetActive(false);
     }
 
-    public void EndGame(bool winner)
+    public void EndGame(bool winner)//конец игры
     {      
         for (int i=0; i< Enemyes.Count;i++)
         {
@@ -88,7 +101,7 @@ public class MainController : MonoBehaviour
             UI.MenuText.text= StringManager.UiTextWin;
         }
         else UI.MenuText.text = StringManager.UiTextWLose;        
-    }
+    }   
 
-    private static T Load<T>(string resourcesPath) where T : Object => CustomResources.Load<T>(Path.ChangeExtension(resourcesPath, null));//перенести ToDo
+    #endregion
 }

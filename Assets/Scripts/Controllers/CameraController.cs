@@ -2,21 +2,34 @@
 
 public class CameraController : MonoBehaviour, IOnUpdate,IOnStart//помещается на камеру
 {
-    [SerializeField] private Transform mTarget;
+    #region Fields
+
+    [SerializeField] private Transform mTarget;//цель камеры
     [SerializeField] private Vector3 offset = new Vector3(-0.6f, -0.6f, -0.6f);//данные перенести в scriptobj
-    [SerializeField] private float zoomSpeed = 4f;
-    [SerializeField] private  float minZoom = 18f;
-    [SerializeField] private float maxZoom = 28f;
-    [SerializeField] private float pitch = 4f;
-    private Transform mTransform;
+    [SerializeField] private float zoomSpeed = 4f;//скорость зума
+    [SerializeField] private  float minZoom = 18f;//мин близкий зум
+    [SerializeField] private float maxZoom = 28f;//макс дальность зума
+    [SerializeField] private float pitch = 4f;//наклон
+    private Transform mTransform;//камера
     private float currentZoom = 10f;
     private float currentRot = 0f;
     private float prevMouseX;
-    public Transform Target { set { mTarget = value; } }     
-    
+
+    #endregion
+
+
+    #region Properties
+
+    public Transform Target { set { mTarget = value; } }
+
+    #endregion
+
+
+    #region Method 
+
     public void OnStart()
     {
-        Target = MainController.Instance.Character.Gfx.transform;
+        Target = MainController.Instance.Character.Gfx.transform;//объект
         mTransform = Camera.main.transform;
     }
 
@@ -40,4 +53,7 @@ public class CameraController : MonoBehaviour, IOnUpdate,IOnStart//помеща�
         }
         prevMouseX = Input.mousePosition.x;
     }
+
+    #endregion
+
 }

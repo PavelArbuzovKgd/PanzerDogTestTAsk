@@ -4,6 +4,9 @@ using UnityEngine;
 
 public abstract class Weapon : MonoBehaviour // базовый класс дЛя всех оружий
 {
+
+    #region Fields
+
     [SerializeField] protected Transform _barrel;///откуда вылетает пуля
     [SerializeField] protected int _maxCountAmmunition = 40;/// максимально количество пуль
     [SerializeField] protected float _force = 999;// сила вылета
@@ -13,7 +16,12 @@ public abstract class Weapon : MonoBehaviour // базовый класс дЛя
     private int minCountAmmunition = 20;//минимально количество пуль///TODO/настройки перенести scriptObj
     private int countClip = 25;///количество обоим
     private Queue<Clip> clips = new Queue<Clip>();///очередь обоим
-    public Clip Clip;//  обоима                                   
+    public Clip Clip;//  обоима 
+
+    #endregion
+
+
+    #region Method
 
     protected void Start()
     {
@@ -28,14 +36,14 @@ public abstract class Weapon : MonoBehaviour // базовый класс дЛя
 
     public void TryFire(Ammunition Ammunition) 
     {
-        if (!isReady) return;
-        if (Clip.CountAmmunition <= 0) return; 
-        if (!Ammunition) return;                                  
+        if (!isReady) return;//не готов к стрельбе
+        if (Clip.CountAmmunition <= 0) return; //если нет обоимы
+        if (!Ammunition) return;    //если не чем стрелять                              
         var temAmmunition = Instantiate(Ammunition, _barrel.position, _barrel.rotation);// создаем Amunition в спаун позиции 
-        temAmmunition.AddForce(_barrel.forward * _force);
+        temAmmunition.AddForce(_barrel.forward * _force);//придаем исилу вылета
         Clip.CountAmmunition--;// отнимаем пулю 
         isReady = false;// выстрел произведен
-        Invoke(nameof(ReadyShoot), _rechergeTime);// вызываем перезарядку через опр время                                                  
+        Invoke(nameof(ReadyShoot), _rechergeTime);// вызываем готовность к стрельбе через опр время                                                  
     }
 
     protected void ReadyShoot()//метод готовности к стрельбе
@@ -50,10 +58,12 @@ public abstract class Weapon : MonoBehaviour // базовый класс дЛя
 
     public void ReloadClip()// метед перезарядке обоимы
     {        
-        if (Clip.CountAmmunition == _maxCountAmmunition) return;
-        if (CountClip <= 0) return;// если обоим меньше или 0 то не перзаряжаемся
+        if (Clip.CountAmmunition == _maxCountAmmunition) return;//если обоима полная
+        if (CountClip <= 0) return;// не перзаряжаемся
         Clip = clips.Dequeue(); // в противно случае перезарежаемся
     }
 
     public int CountClip => clips.Count;//TODO реализовать  вывод количество в интерфейс
+
+    #endregion
 }
