@@ -17,6 +17,7 @@ public class MainController : MonoBehaviour
     public Character Character;
     public List<Enemy> Enemyes;
     public GameObject LevelGame;
+    public WavesSatting WavesSatting;
 
     #endregion
 
@@ -43,6 +44,7 @@ public class MainController : MonoBehaviour
     void Start()
     {
         UI = GetComponent<UI>();
+        WavesSatting = new WavesSatting();
         TimeService = new UnityTimeService();       
         timeRemainingController = new TimeRemainingController();       
         LevelGame.SetActive(false);
@@ -60,7 +62,8 @@ public class MainController : MonoBehaviour
     }
 
     public void InitGame()//запуск игры
-    {      
+    {
+        UI.GetSetting();
         Enemyes = new List<Enemy>();
         characterData =CustomResources.Load<CharacterData>(StringManager.CharacterDataPath);
         Character = new Character(characterData);

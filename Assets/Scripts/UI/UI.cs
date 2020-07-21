@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 using DG.Tweening;
+using System;
 
 public class UI : MonoBehaviour
 {
@@ -10,6 +11,10 @@ public class UI : MonoBehaviour
     [SerializeField] private Button _startGameButton;//кнопка начала игры
     [SerializeField] private Button _exitButton;//кнопка выхода
     [SerializeField] private Button _hpBar;//хп бар
+    [SerializeField] private InputField CountWave;
+    [SerializeField] private InputField MinCountEnemy;
+    [SerializeField] private InputField MaxCountEnemy;
+    [SerializeField] private InputField DelayWave;
     public GameObject GameUi;//игровой интерфейс 
     public  GameObject Menu;//меню
     public Text MenuText;//текст 
@@ -63,6 +68,11 @@ public class UI : MonoBehaviour
             AppendInterval(interval).
             Join(MenuText.transform.DORotate(new Vector3(0.0f, 0.0f, -50f), duration)).SetEase(Ease.OutBounce);
         sequence.Play();
+    }
+
+    public void GetSetting()
+    {
+        MainController.Instance.WavesSatting.SetSettings(int.Parse(CountWave.text), int.Parse(MinCountEnemy.text), int.Parse(MaxCountEnemy.text), int.Parse(DelayWave.text));
     }
 
     #endregion
